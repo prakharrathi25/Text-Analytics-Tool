@@ -8,10 +8,17 @@ import pandas as pd
 import pprint
 import warnings
 import tempfile
+from io import StringIO
 from PIL import  Image
+
+# Warnings ignore 
+warnings.filterwarnings(action='ignore')
+st.set_option('deprecation.showfileUploaderEncoding', False)
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # Import the custom modules 
 import spam_filter as sf
+import text_analysis as nlp
 
 # Describing the Web Application 
 
@@ -21,21 +28,13 @@ st.subheader("by Prakhar Rathi")
 
 display = Image.open('images/display.jpg')
 display = np.array(display)
-st.image(display, use_column_width = True)
+st.image(display)
 
 # Sidebar options
 option = st.sidebar.selectbox('Navigation', 
-['Home', "Email Spam Classifier",  'Word Cloud', 'N-Gram Analysis', 'Part of Speech Analysis', 'Similarity Analysis'])
+["Home", "Email Spam Classifier", "Keyword Sentiment Analysis", 'Word Cloud', 'N-Gram Analysis', 'Part of Speech Analysis', 'Similarity Analysis'])
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
-
-# st.header('Enter text or upload file')
-# text = st.text_area('Type Something', height = 400)
-    
-# file_text = st.file_uploader('Text File', encoding = 'ISO-8859-1')
-    
-# if file_text!=None:
-#     text = file_text.read()
 
 if option == 'Home':
 	st.write(
@@ -45,6 +44,62 @@ if option == 'Home':
 				from the left side bar.
 			"""
 		)
+
+# Word Cloud Feature
+elif option == "Word Cloud":
+
+	st.header("Generate Word Cloud")
+	st.subheader("Generate a word cloud from text containing the most popular words in the text.")
+
+	# Ask for text or text file
+	st.header('Enter text or upload file')
+	text = st.text_area('Type Something', height = 400)
+	   
+	# Collect data from a text file
+	# file_text = st.file_uploader("Choose a text file", accept_multiple_files=False)	
+	
+	# if file_text is not None:
+
+	# 	# Read as string data 
+	# 	text = file_text.read()
+	# 	text = text.decode("latin-1")
+
+	# 	# Check if the length was recognized correctly 
+	# 	if len(text) == 0:
+	# 		st.write("**Error**: Please upload the text file again")
+	# 	else:
+	# 		st.write(f"Identified {len(text)} characters")
+
+	# Upload images 
+	mask = st.file_uploader('Use Image Mask', type = ['jpg'])
+
+	# Add a button feature
+	if st.button("Generate Wordcloud"):
+
+		# Generate word cloud 
+		st.write(len(text))
+		nlp.create_wordcloud(text, mask)
+		st.pyplot()
+
+# N-Gram Analysis Option 
+elif option == "N-Gram Analysis":
+	
+	st.header("N-Gram Analysis")
+	st.subheader("This section displays the most commonly occuring N-Grams in your Data")
+
+	# Ask for text or text file
+	st.header('Enter text below')
+	text = st.text_area('Type Something', height = 400)
+
+	# Parameters
+	n = st.sidebar.slider("N for the N-gram", min_value=1, max_value=8, step=1, value=2)
+	topk = st.sidebar.slider("Top k most common phrases", min_value=10, max_value=50, step=5, value=10)
+
+	# Add a button 
+	if st.button("Generate N-Gram Plot"): 
+		# Plot the ngrams
+		nlp.plot_ngrams(text, n=n, topk=topk)
+		st.pyplot()
 
 # Spam Filtering Option
 elif option == "Email Spam Classifier":
@@ -79,3 +134,7 @@ elif option == "Email Spam Classifier":
 		else:
 			st.write("This message is **Not Spam**")
 		
+# POS Tagging Option 
+elif option == "POS Tagging":
+	
+	 
