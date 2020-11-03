@@ -1,4 +1,3 @@
-
 # Import necessary libraries
 import joblib
 import re
@@ -10,6 +9,7 @@ import warnings
 import tempfile
 from io import StringIO
 from PIL import  Image
+from rake_nltk import Rake
 
 # Warnings ignore 
 warnings.filterwarnings(action='ignore')
@@ -53,7 +53,7 @@ elif option == "Word Cloud":
 
 	# Ask for text or text file
 	st.header('Enter text or upload file')
-	text = st.text_area('Type Something', height = 400)
+	text = st.text_area('Type Something', height=400)
 	   
 	# Collect data from a text file
 	# file_text = st.file_uploader("Choose a text file", accept_multiple_files=False)	
@@ -89,7 +89,7 @@ elif option == "N-Gram Analysis":
 
 	# Ask for text or text file
 	st.header('Enter text below')
-	text = st.text_area('Type Something', height = 400)
+	text = st.text_area('Type Something', height=400)
 
 	# Parameters
 	n = st.sidebar.slider("N for the N-gram", min_value=1, max_value=8, step=1, value=2)
@@ -122,7 +122,7 @@ elif option == "Email Spam Classifier":
 		model_input = sf.clean_text_spam(model_input)
 
 		# Vectorize the inputs 
-		vectorizer = joblib.load('Models/count_vectorizer_sentiment.sav')
+		vectorizer = joblib.load('Models/count_vectorizer_spam.sav')
 		vec_inputs = vectorizer.transform(model_input)
 		
 		# Load the model
@@ -136,5 +136,46 @@ elif option == "Email Spam Classifier":
 		
 # POS Tagging Option 
 elif option == "POS Tagging":
-	
-	 
+	st.header("Enter the statement that you want to analyze")
+
+elif option == "Keyword Sentiment Analysis":
+
+	st.header("Sentiment Analysis Tool")
+	st.subheader("Enter the statement that you want to analyze")
+
+	text_input = st.text_area("Enter sentence", height=50)
+
+	# Model Selection 
+	model_select = st.selectbox("Model Selection", ["Naive Bayes", "SVC", "Logistic Regression"])
+
+	if st.button("Predict"):
+		
+		# Load the model 
+		if model_select == "SVC":
+			sentiment_model = joblib.load('Models/SVC_sentiment_model.sav')
+		elif model_select == "Logistic Regression":
+			sentiment_model = joblib.load('Models/LR_sentiment_model.sav')
+		elif model_select == "Naive Bayes":
+			sentiment_model = joblib.load('Models/NB_sentiment_model.sav')
+		
+		# Vectorize the inputs 
+		vectorizer = joblib.load('Models/tfidf_vectorizer_sentiment_model.sav')
+		vec_inputs = vectorizer.transform([text_input])
+
+		# Keyword extraction 
+		r = Rake(language='english')
+		r.extract_keywords_from_text(text_input)
+		
+		# Get the important phrases
+		phrases = r.get_ranked_phrases()
+
+		# Make the prediction 
+		if sentiment_model.predict(vec_inputs):
+			st.write("This statemen is **Positve**")
+		else:
+			st.write("This statemen is **Negative**")
+
+		# Display the important phrases
+		st.write("These are the **keywords** causing the above sentiment:")
+		for i, p in enumerate(phrases):
+			st.write(i+1, p)
