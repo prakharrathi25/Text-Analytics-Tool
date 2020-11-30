@@ -146,3 +146,20 @@ def plot_ngrams(text, n=2, topk=15):
     plt.ylabel("Ngram frequencies")
     plt.xticks(rotation=90)
     plt.show()
+
+
+# Function to return POS tags of a sentence 
+def pos_tagger(s):
+    
+    # Define the tag dictionary 
+    output = ''
+    
+    # Remove punctuations
+    s = s.translate(str.maketrans('', '', string.punctuation))
+    
+    tagged_sentence = nltk.pos_tag(nltk.word_tokenize(s))
+    for tag in tagged_sentence:
+        out = tag[0] + ' ---> ' + tag[1] + '<br>'
+        output += out
+
+    return output

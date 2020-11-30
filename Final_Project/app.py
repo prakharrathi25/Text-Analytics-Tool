@@ -10,6 +10,11 @@ import tempfile
 from io import StringIO
 from PIL import  Image
 from rake_nltk import Rake
+import spacy
+import spacy_streamlit
+from collections import Counter
+import en_core_web_sm
+
 
 # Warnings ignore 
 warnings.filterwarnings(action='ignore')
@@ -32,7 +37,14 @@ st.image(display)
 
 # Sidebar options
 option = st.sidebar.selectbox('Navigation', 
-["Home", "Email Spam Classifier", "Keyword Sentiment Analysis", 'Word Cloud', 'N-Gram Analysis', 'Part of Speech Analysis', 'Similarity Analysis'])
+["Home",
+ "Email Spam Classifier", 
+ "Keyword Sentiment Analysis", 
+ "Word Cloud", 
+ "N-Gram Analysis", 
+ "Parts of Speech Analysis", 
+ "Named Entity Recognition",
+ "Text Generation"])
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
 
@@ -54,23 +66,8 @@ elif option == "Word Cloud":
 	# Ask for text or text file
 	st.header('Enter text or upload file')
 	text = st.text_area('Type Something', height=400)
-	   
-	# Collect data from a text file
-	# file_text = st.file_uploader("Choose a text file", accept_multiple_files=False)	
-	
-	# if file_text is not None:
 
-	# 	# Read as string data 
-	# 	text = file_text.read()
-	# 	text = text.decode("latin-1")
-
-	# 	# Check if the length was recognized correctly 
-	# 	if len(text) == 0:
-	# 		st.write("**Error**: Please upload the text file again")
-	# 	else:
-	# 		st.write(f"Identified {len(text)} characters")
-
-	# Upload images 
+	# Upload mask image 
 	mask = st.file_uploader('Use Image Mask', type = ['jpg'])
 
 	# Add a button feature
@@ -135,9 +132,41 @@ elif option == "Email Spam Classifier":
 			st.write("This message is **Not Spam**")
 		
 # POS Tagging Option 
-elif option == "POS Tagging":
+elif option == "Parts of Speech Analysis":
 	st.header("Enter the statement that you want to analyze")
 
+	text_input = st.text_input("Enter sentence", '')
+
+	if st.button("Show POS Tags"):
+		tags = nlp.pos_tagger(text_input)
+		st.markdown("The POS Tags for this sentence are: ")
+		st.markdown(tags, unsafe_allow_html=True)
+
+
+		st.markdown("### Penn-Treebank Tagset")
+		st.markdown("The tags can be referenced from here:")
+
+		# Show image
+		display_pos = Image.open('images/Penn_Treebank.png')
+		display_pos = np.array(display_pos)
+		st.image(display_pos)
+
+# Named Entity Recognition 
+elif option == "Named Entity Recognition":
+	st.header("Enter the statement that you want to analyze")
+
+	st.markdown("**Random Sentence:** A Few Good Men is a 1992 American legal drama film set in Boston directed by Rob Reiner and starring Tom Cruise, Jack Nicholson, and Demi Moore. The film revolves around the court-martial of two U.S. Marines charged with the murder of a fellow Marine and the tribulations of their lawyers as they prepare a case to defend their clients.")
+	text_input = st.text_area("Enter sentence")
+
+	ner = en_core_web_sm.load()
+	doc = ner(str(text_input))
+
+	# Display 
+	spacy_streamlit.visualize_ner(doc, labels=ner.get_pipe('ner').labels)
+
+
+
+# Keyword Sentiment Analysis
 elif option == "Keyword Sentiment Analysis":
 
 	st.header("Sentiment Analysis Tool")
