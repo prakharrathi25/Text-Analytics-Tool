@@ -14,6 +14,7 @@ import spacy
 import spacy_streamlit
 from collections import Counter
 import en_core_web_sm
+from nltk.tokenize import sent_tokenize
 
 
 # Warnings ignore 
@@ -24,6 +25,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 # Import the custom modules 
 import spam_filter as sf
 import text_analysis as nlp
+import text_summarize as ts
 
 # Describing the Web Application 
 
@@ -44,7 +46,7 @@ option = st.sidebar.selectbox('Navigation',
  "N-Gram Analysis", 
  "Parts of Speech Analysis", 
  "Named Entity Recognition",
- "Text Generation"])
+ "Text Summarizer"])
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
 
@@ -208,3 +210,31 @@ elif option == "Keyword Sentiment Analysis":
 		st.write("These are the **keywords** causing the above sentiment:")
 		for i, p in enumerate(phrases):
 			st.write(i+1, p)
+
+
+# Text Summarizer 
+elif option == "Text Summarizer": 
+	st.header("Text Summarization")
+	
+	st.subheader("Enter a corpus that you want to summarize")
+	text_input = st.text_area("Enter a paragraph", height=150)
+	sentence_count = len(sent_tokenize(text_input))
+	st.write("Number of sentences:", sentence_count)
+	
+	model = st.sidebar.selectbox("Model Select", ["GenSim", "TextRank", "LexRank"])
+	ratio = st.sidebar.slider("Select summary ratio", min_value=0.0, max_value=1.0, value=0.3, step=0.1)
+	
+	if st.button("Summarize"):
+		if model == "GenSim":
+			out = ts.text_sum_gensim(text_input, ratio=ratio)
+			# st.write(out)
+		elif model == "TextRank":
+			out = ts.text_sum_text(text_input, ratio=ratio)
+			# st.write(out)
+		else:
+			out = ts.text_sum_text(text_input, ratio=ratio)
+			# st.write(out)
+
+		st.write("**Summary Output:**", out)
+		st.write("Number of output sentences:", len(sent_tokenize(out)))
+
