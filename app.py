@@ -202,9 +202,9 @@ elif option == "Keyword Sentiment Analysis":
 
 		# Make the prediction 
 		if sentiment_model.predict(vec_inputs):
-			st.write("This statemen is **Positve**")
+			st.write("This statement is **Positve**")
 		else:
-			st.write("This statemen is **Negative**")
+			st.write("This statement is **Negative**")
 
 		# Display the important phrases
 		st.write("These are the **keywords** causing the above sentiment:")
