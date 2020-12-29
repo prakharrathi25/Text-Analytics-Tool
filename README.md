@@ -12,7 +12,7 @@ This is an application that automates the process of text analysis with a user f
 
 ### Text Analytics :bar_chart:
 
-Text analytics is the automated process of translating large volumes of unstructured text into quantitative data to uncover insights, trends, and patterns. Combined with data visualization tools, this technique enables companies to understand the story behind the numbers and make better decisions. It is an artificial intelligence (AI) technology that uses natural language processing (NLP) to transform the unstructured text in documents and databases into normalized, structured data suitable for analysis or to drive machine learning (ML) algorithms. \cite{b1}
+Text analytics is the automated process of translating large volumes of unstructured text into quantitative data to uncover insights, trends, and patterns. Combined with data visualization tools, this technique enables companies to understand the story behind the numbers and make better decisions. It is an artificial intelligence (AI) technology that uses natural language processing (NLP) to transform the unstructured text in documents and databases into normalized, structured data suitable for analysis or to drive machine learning (ML) algorithms. [1]
 
 ### Need to automate text analytics :robot_face: 
 
@@ -48,7 +48,7 @@ I have built a model which given an email input (subject + message) would output
 
 #### Dataset 
 
-The dataset that I used for this analysis is the publicly available dataset, first described in the 2006 conference paper "Spam Filtering with Naive Bayes?" by V. Metsis, I. Androutsopoulos, and G. Paliouras. \cite{b2}
+The dataset that I used for this analysis is the publicly available dataset, first described in the 2006 conference paper "Spam Filtering with Naive Bayes?" by V. Metsis, I. Androutsopoulos, and G. Paliouras. [2]
 
 The data can found in the `Datasets` folder in the project directory named as *`spam.txt`* which was then cleaned and converted to *`spam_data.csv`*.
 
@@ -95,10 +95,9 @@ The application output can be seen in the image below.
 
 Given a large corpus, we need to summarize it into a summary which covers key points and conveys the exact meaning of the original document to the best of our ability. I have created an extractive text summary tool which  takes the same words, phrases, and sentences from the original summary, thereby selecting the most important sentences in the given text. There are different methods of estimating the most important sentences in a large text. The number of sentences is calculated using a compression ratio. 
 
+Sentence Count = η * Total Sentence Count
 
-$$\text{Sentence Count} = \eta * \text{Total Sentence Count}$$
-
-where $\eta$ is the compression ratio between 0 to 1.  I have used different forms of text-ranking algorithm which builds a graph related to the text. In a graph, each sentence is considered as vertex and each vertex is linked to the other vertex. These vertices cast a vote for another vertex. The importance of each vertex is defined by the higher number of votes. [6] The algorithms I used can be found in the `Text_Summarization.ipynb` notebook. 
+where η is the compression ratio between 0 to 1.  I have used different forms of text-ranking algorithm which builds a graph related to the text. In a graph, each sentence is considered as vertex and each vertex is linked to the other vertex. These vertices cast a vote for another vertex. The importance of each vertex is defined by the higher number of votes. [6] The algorithms I used can be found in the `Text_Summarization.ipynb` notebook. 
 
 ### POS Tagging
 
