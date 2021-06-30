@@ -2,3 +2,4 @@ data/tweets_sentiment_data.csv
 Notebooks/best_model_state.bin
 nlp/
 *.pyc
+__pycache__/
